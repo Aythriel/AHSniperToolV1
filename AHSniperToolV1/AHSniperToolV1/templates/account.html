@@ -1,0 +1,13 @@
+﻿{% extends "layout.html" %}
+{% block head %}
+<script src=" {{ url_for('static', filename = 'myjs/account_management.js') }}"></script>
+{% endblock %}
+
+{% block content %}
+<h1> {{ title }} </h1>
+<p> {{message }} </p>
+
+
+<button onclick="logout()">Logout</button>
+
+{% endblock %}

@@ -1,0 +1,52 @@
+﻿{% extends "layout.html" %}
+{% block head %}
+<script src="{{ url_for('static', filename = 'myjs/browse_functions.js') }}"></script>
+{% endblock %}
+{% block content %}
+
+<h1> {{ message }} </h1>
+
+<div class="jumbotron">
+    <form method="POST" action="/search">
+        <input type="text" name="itemName" />
+        <button type="submit"> Search</button>
+    </form>
+</div>
+
+<p> GO TO PAGE (1-1406) </p>
+<input type="number" id="pageNumber" />
+<button onclick="goToPage()">GO!</button>
+
+<table>
+    <tr>
+        <td>Item Name</td>
+        <td>Buyout Value</td>
+        <td>Current Bid</td>
+        <td>Estimated Value</td>
+        <td>Seller</td>
+        <td>Realm</td>
+        <td>Time Left</td>
+        <td>Auction ID</td>
+        <td>Item ID</td>
+        <td>ACTIONS</td>
+    </tr>
+    {% for item in items %}
+    <tr>
+        <td>{{item[0]}}</td>
+        <td>{{item[1]}}</td>
+        <td>{{item[2]}}</td>
+        <td>{{item[3]}}</td>
+        <td>{{item[4]}}</td>
+        <td>{{item[5]}}</td>
+        <td>{{item[6]}}</td>
+        <td>{{item[7]}}</td>
+        <td>{{item[8]}}</td>
+        <td>
+            <a href="">Add to wishlist</a>
+            <br />
+            <a href="">Add to reserved</a>
+        </td>
+    </tr>
+    {% endfor %}
+</table>
+{% endblock %}
