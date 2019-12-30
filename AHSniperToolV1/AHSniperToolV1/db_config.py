@@ -11,7 +11,7 @@ clientSecret = 'nKhl13SHEt0cc55V3trMEsl6IBZrtCAX'
 tokenScope = "https://eu.battle.net/oauth/token"
 ahScope = "https://eu.api.blizzard.com/wow/auction/data/silvermoon?"
 
-verbotenItems = [123868]
+verbotenItems = [82800,123865,123866,123867,123868,123869, 136851]
 
 class OracleConn:
     class __OnlyOne:
@@ -30,6 +30,7 @@ class UndermineConn:
     class __OnlyOne:
         def __init__(self):
             try:
+                
                 self.conn = \
                 connectorSQL.connect(host='newswire.theunderminejournal.com',
                                  database='newsstand', user='', password='')
@@ -48,19 +49,22 @@ class UndermineConn:
 #for auctions table it pulls from blizz
 #for items table it pulls from underminejournal
 #for price data on each auction it pulls from underminejournal
+
 def initOracleDB():
     oracle = OracleConn()
     undermine = UndermineConn()
 
     orclCursor = oracle.cursor()
-    
+
     #check for items table
     orclCursor.execute('SELECT * FROM Items')
     orclExistingItems = orclCursor.fetchmany(5)
     if (len(orclExistingItems) < 1 ) and undermine.is_connected() : 
         print('Table Items was found uninitiated. Fetching items from underminejournal...')
         cursorUndermine = undermine.cursor()
-        cursorUndermine.execute('select id,name_enus FROM tblDBCItem')
+        #underquery="SELECT DISTINCT(I.id),I.name_enus, G.median FROM tblDBCItem I, tblItemGlobal G WHERE I.id=G.item AND REGION='EU'"
+        underquery="SELECT I.id,I.name_enus, G.median FROM tblDBCItem I INNER JOIN tblItemGlobal G ON I.id=G.item AND REGION='US' GROUP BY I.id"
+        cursorUndermine.execute(underquery)
         records = cursorUndermine.fetchall()
         print ('Total items fetched from underminejournal:  ', len(records))
             
@@ -68,8 +72,9 @@ def initOracleDB():
         for record in records:
             itemID = record[0]
             itemName = record[1]
+            itemValue = record[2]
             print("Inserting Item: {} - {}".format(itemID,itemName))
-            orclCursor.callproc('table_dml.insert_item', [itemID, itemName])
+            orclCursor.callproc('table_dml.insert_item', [itemID, itemName, itemValue])
         print('Done inserting items.')
     orclCursor.execute('SELECT * FROM Auctions')
     orclExistingAuctions = orclCursor.fetchmany(5)
@@ -101,19 +106,19 @@ def initOracleDB():
         dumpOBJ = json.loads(dumpITSELF)    
         print("Got a usable object. Begining insertion.")    
         realm = "Silvermoon"
-        estimatedValue = 0
+        insertedItems = 0
         for auction in dumpOBJ["auctions"] :
             itemId = auction["item"]
             if itemId in verbotenItems: #items that just don't belong lol.
                 continue
             idAuction = auction["auc"]
-            seller = auction["owner"]
+            #seller = auction["owner"] # blizzard doesn't provide this anymore...
             buyout = auction["buyout"]
             currentBid = auction["bid"]
             timeLeft = auction["timeLeft"]
             
-            print('Inserting item: {}'.format(itemId))
+            print('Inserting auction: {}'.format(idAuction))
             
-            orclCursor.callproc('table_dml.insert_auction', [idAuction, realm, seller, buyout, currentBid, estimatedValue, timeLeft, itemId])
-            
-        print("Procedure done. Starting flask server.")
+            orclCursor.callproc('table_dml.insert_auction', [idAuction, realm, buyout, currentBid, timeLeft, itemId])
+            insertedItems += 1
+        print("Procedure done. Inserted {} auctions. Starting flask server.".format(insertedItems))

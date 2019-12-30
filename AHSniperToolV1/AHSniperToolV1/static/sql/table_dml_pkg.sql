@@ -1,9 +1,9 @@
 CREATE OR REPLACE PACKAGE TABLE_DML AUTHID CURRENT_USER AS
-    PROCEDURE INSERT_ITEM(itemID IN NUMBER, itemName IN VARCHAR2);
-    PROCEDURE DELETE_ITEM(itemID IN NUMBER);
-    PROCEDURE UPDATE_ITEM(itemID IN NUMBER, newName IN VARCHAR2);
+    PROCEDURE INSERT_ITEM(itemID IN NUMBER, itemName IN VARCHAR2, estimatedValue IN NUMBER DEFAULT 0);
+    PROCEDURE UPDATE_ITEM_NAME(itemID IN NUMBER, newName IN VARCHAR2);
+	PROCEDURE UPDATE_ITEM_PRICE(itemID IN NUMBER, newPrice IN NUMBER);
 
-    PROCEDURE INSERT_AUCTION(auctionID IN NUMBER, realm IN VARCHAR2, seller IN VARCHAR2, buyout NUMBER, currentBid IN NUMBER, estimatedValue IN NUMBER, timeleft IN VARCHAR2, itemID IN NUMBER);
+    PROCEDURE INSERT_AUCTION(auctionID IN NUMBER, realm IN VARCHAR2, buyout NUMBER, currentBid IN NUMBER, timeleft IN VARCHAR2, itemID IN NUMBER);
     PROCEDURE DELETE_AUCTION(auctionID IN NUMBER);
     
     PROCEDURE INSERT_RESERVED_AUCTION(userID IN NUMBER, auctionID IN NUMBER, dateMade IN DATE, dateExpires IN DATE, assignedID OUT NUMBER);
@@ -19,9 +19,9 @@ END;
 /
 create or replace PACKAGE BODY TABLE_DML IS
 
-    PROCEDURE INSERT_ITEM(itemID IN NUMBER, itemName IN VARCHAR2) IS
+    PROCEDURE INSERT_ITEM(itemID IN NUMBER, itemName IN VARCHAR2, estimatedValue IN NUMBER DEFAULT 0 ) IS
     BEGIN
-        INSERT INTO ITEMS VALUES(itemID, itemName);
+        INSERT INTO ITEMS VALUES(itemID, itemName, estimatedValue);
         COMMIT;
         EXCEPTION WHEN OTHERS THEN
             RAISE;
@@ -35,18 +35,26 @@ create or replace PACKAGE BODY TABLE_DML IS
             RAISE;
     END DELETE_ITEM;
 
-    PROCEDURE UPDATE_ITEM(itemID IN NUMBER, newName IN VARCHAR2) IS
+    PROCEDURE UPDATE_ITEM_NAME(itemID IN NUMBER, newName IN VARCHAR2) IS
     BEGIN
         UPDATE ITEMS SET ITEMS.name = newName WHERE ITEMS.id = itemID;
         COMMIT;
         EXCEPTION WHEN OTHERS THEN
             RAISE;
-    END UPDATE_ITEM;
+    END UPDATE_ITEM_NAME;
 
-    PROCEDURE INSERT_AUCTION(auctionID IN NUMBER, realm IN VARCHAR2, seller IN VARCHAR2, buyout NUMBER, currentBid IN NUMBER, estimatedValue IN NUMBER, timeleft IN VARCHAR2, itemID IN NUMBER) IS
+	PROCEDURE UPDATE_ITEM_PRICE(itemID IN NUMBER, newPrice IN NUMBER) IS
     BEGIN
-        INSERT INTO AUCTIONS(ID_AUCTION, REALM, SELLER_NAME, BUYOUT_VALUE, CURRENT_BID, ESTIMATED_VALUE, TIMELEFT,ID_ITEM)
-            VALUES(auctionID, realm, seller,buyout,currentBid,estimatedValue,timeleft,itemID);
+        UPDATE ITEMS SET ITEMS.average_price = newPrice WHERE ITEMS.id = itemID;
+        COMMIT;
+        EXCEPTION WHEN OTHERS THEN
+            RAISE;
+    END UPDATE_ITEM_PRICE;
+
+    PROCEDURE INSERT_AUCTION(auctionID IN NUMBER, realm IN VARCHAR2, buyout NUMBER, currentBid IN NUMBER, timeleft IN VARCHAR2, itemID IN NUMBER) IS
+    BEGIN
+        INSERT INTO AUCTIONS(ID_AUCTION, REALM, BUYOUT_VALUE, CURRENT_BID, TIMELEFT,ID_ITEM)
+            VALUES(auctionID, realm, buyout,currentBid,timeleft,itemID);
         COMMIT;
         EXCEPTION WHEN OTHERS THEN
             RAISE;
@@ -143,3 +151,19 @@ create or replace PACKAGE BODY TABLE_DML IS
     END DELETE_WISHLIST;
 
 END TABLE_DML;
+
+create or replace TRIGGER CALCULATE_DISCOUNT
+		BEFORE INSERT ON AUCTIONS
+		FOR EACH ROW
+		DECLARE
+			v_discount auctions.discount%TYPE;
+			v_avg items.average_price%TYPE;
+		BEGIN
+                v_discount := 0.0;
+				SELECT items.average_price INTO v_avg FROM ITEMS WHERE items.id = :NEW.ID_ITEM;
+                IF v_avg IS NULL THEN
+                    v_avg :=1.0;
+                END IF;
+				v_discount :=  (1.0 - (:NEW.BUYOUT_VALUE / v_avg )) * 100; 
+				:NEW.DISCOUNT := v_discount;
+END CALCULATE_DISCOUNT;

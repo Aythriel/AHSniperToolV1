@@ -12,10 +12,9 @@ CREATE OR REPLACE PACKAGE BODY TABLE_MANAGEMENT IS
     command := 'CREATE TABLE auctions (
     id_auction        INTEGER NOT NULL,
     realm             VARCHAR2(30 CHAR) NOT NULL,
-    seller_name       VARCHAR2(15 CHAR) NOT NULL,
+	discount		  NUMBER(10,2),
     buyout_value      INTEGER NOT NULL,
     current_bid       INTEGER NOT NULL,
-    estimated_value   INTEGER,
     timeleft          VARCHAR2(15 CHAR) NOT NULL,
     id_item           INTEGER NOT NULL
 )';
@@ -26,7 +25,8 @@ CREATE OR REPLACE PACKAGE BODY TABLE_MANAGEMENT IS
     
     command := 'CREATE TABLE items (
     id     INTEGER NOT NULL,
-    name   VARCHAR2(100 CHAR) NOT NULL
+    name   VARCHAR2(100 CHAR) NOT NULL,
+	average_price NUMBER(38,0) DEFAULT 0
 )';
     EXECUTE IMMEDIATE command;
     
@@ -99,6 +99,7 @@ CREATE OR REPLACE PACKAGE BODY TABLE_MANAGEMENT IS
         REFERENCES useraccounts ( id )
             ON DELETE CASCADE';
     EXECUTE IMMEDIATE command;
+
    END CREATE_TABLES;
 
    PROCEDURE DELETE_TABLES IS

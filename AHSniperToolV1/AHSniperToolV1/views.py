@@ -42,7 +42,7 @@ def browse():
         return redirect(url_for('doLogin'))
     page = request.args.get('page')
     cursorOracle = orclConnection.cursor()
-    cursorOracle.prepare("select I.NAME, A.buyout_value, A.current_bid, A.estimated_value, A.seller_name, A.realm, A.timeleft, A.id_auction, I.ID from (select t.*,row_number() over (order by ID_AUCTION) rownumber from AUCTIONS t) A, Items I where rownumber between :minrow and :maxrow and i.id=a.id_item")
+    cursorOracle.prepare("select I.NAME, A.buyout_value, A.current_bid, I.average_price, A.discount, A.realm, A.timeleft, A.id_auction, I.ID from (select t.*,row_number() over (order by ID_AUCTION) rownumber from AUCTIONS t) A, Items I where rownumber between :minrow and :maxrow and i.id=a.id_item")
     if page is None:
         minRow=0
         maxRow=100
@@ -252,7 +252,7 @@ def searchAuctions():
         return redirect('browse')
     itemName = request.form["itemName"]
     cursorOracle = orclConnection.cursor()
-    statement = "SELECT I.NAME, A.buyout_value, A.current_bid, A.estimated_value, A.seller_name, A.realm, A.timeleft, A.id_auction, I.ID FROM AUCTIONS A, ITEMS I WHERE I.ID=A.ID_ITEM AND I.NAME='{}' ORDER BY A.buyout_value".format(itemName)
+    statement = "SELECT I.NAME, A.buyout_value, A.current_bid, I.average_price, A.discount, A.realm, A.timeleft, A.id_auction, I.ID FROM AUCTIONS A, ITEMS I WHERE I.ID=A.ID_ITEM AND I.NAME='{}' ORDER BY A.discount".format(itemName)
     print("Preparing statement:{}".format(statement))
     results=cursorOracle.execute(statement)
     return render_template(
