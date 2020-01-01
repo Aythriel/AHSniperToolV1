@@ -6,14 +6,14 @@ CREATE OR REPLACE PACKAGE TABLE_DML AUTHID CURRENT_USER AS
     PROCEDURE INSERT_AUCTION(auctionID IN NUMBER, realm IN VARCHAR2, buyout NUMBER, currentBid IN NUMBER, timeleft IN VARCHAR2, itemID IN NUMBER);
     PROCEDURE DELETE_AUCTION(auctionID IN NUMBER);
     
-    PROCEDURE INSERT_RESERVED_AUCTION(userID IN NUMBER, auctionID IN NUMBER, dateMade IN DATE, dateExpires IN DATE, assignedID OUT NUMBER);
+    PROCEDURE INSERT_RESERVED_AUCTION(userName IN VARCHAR2, auctionID IN NUMBER, dateMade IN DATE, dateExpires IN DATE, assignedID OUT NUMBER);
     PROCEDURE DELETE_RESERVED_AUCTION(reservedAuctionID IN NUMBER);
 
     PROCEDURE INSERT_USER(username IN VARCHAR2, email IN VARCHAR2, realm IN VARCHAR2, funds IN NUMBER DEFAULT 0, pwHash IN RAW, pwSalt IN RAW, assignedID OUT NUMBER);
     PROCEDURE DELETE_USER(userID IN NUMBER);
     PROCEDURE UPDATE_USER_PARAM(userID IN NUMBER, paramToUpdate IN VARCHAR2, newValue IN VARCHAR2, opRez OUT BOOLEAN);
     
-    PROCEDURE INSERT_WISHLIST(userID IN NUMBER, itemID IN NUMBER, assignedID OUT NUMBER);
+    PROCEDURE INSERT_WISHLIST(user_name IN VARCHAR2, itemID IN NUMBER, assignedID OUT NUMBER);
     PROCEDURE DELETE_WISHLIST(wishlistID IN NUMBER);
 END;
 /
@@ -68,14 +68,28 @@ create or replace PACKAGE BODY TABLE_DML IS
             RAISE;
     END DELETE_AUCTION;
 
-    PROCEDURE INSERT_RESERVED_AUCTION(userID IN NUMBER, auctionID IN NUMBER, dateMade IN DATE, dateExpires IN DATE, assignedID OUT NUMBER) IS
+    PROCEDURE INSERT_RESERVED_AUCTION(userName IN VARCHAR2, auctionID IN NUMBER, dateMade IN DATE, dateExpires IN DATE, assignedID OUT NUMBER) IS
         maxID NUMBER;
+        userID NUMBER;
+        alreadyExists NUMBER;
     BEGIN
-        SELECT COUNT(*) INTO maxID FROM RESERVED_AUCTIONS;
-        maxID := maxID + 1;
-        INSERT INTO RESERVED_AUCTIONS(ID, ID_USER, ID_AUCTION, DATE_MADE, DATE_EXPIRES) VALUES (maxID, userID, auctionID, dateMade, dateExpires);
-        assignedID := maxID;
-        COMMIT;
+        userID := 0;
+        alreadyExists := 0;
+        SELECT ua.ID INTO userID FROM USERACCOUNTS ua WHERE ua.username = userName;
+        IF userID <> 0 THEN
+            SELECT COUNT(*) INTO alreadyExists FROM RESERVED_AUCTIONS WHERE ID_AUCTION = auctionID;
+            IF alreadyExists = 0 THEN
+                SELECT COUNT(*) INTO maxID FROM RESERVED_AUCTIONS;
+                maxID := maxID + 1;
+                INSERT INTO RESERVED_AUCTIONS(ID, ID_USER, ID_AUCTION, DATE_MADE, DATE_EXPIRES) VALUES (maxID, userID, auctionID, dateMade, dateExpires);
+                assignedID := maxID;
+                COMMIT;
+            ELSE
+                assignedID := null;
+            END IF;
+        ELSE
+            assignedID :=null;
+        END IF;
         EXCEPTION WHEN OTHERS THEN
             assignedID:=null;
             raise;
@@ -128,15 +142,30 @@ create or replace PACKAGE BODY TABLE_DML IS
             RAISE;
     END UPDATE_USER_PARAM;
 
-    PROCEDURE INSERT_WISHLIST(userID IN NUMBER, itemID IN NUMBER, assignedID OUT NUMBER) IS
+    PROCEDURE INSERT_WISHLIST(user_name IN VARCHAR2, itemID IN NUMBER, assignedID OUT NUMBER) IS
         maxID NUMBER;
+        userID NUMBER;
+        alreadyExists NUMBER;
     BEGIN
-        SELECT COUNT(*) INTO maxID FROM WISHLISTS;
-        maxID :=maxID +1;
-        INSERT INTO WISHLISTS(ID, ID_USER, ID_ITEM, NOTIFIED_FOR_AUCTION)
-            VALUES(maxID, userID, itemID, 0);
-        assignedID := maxID;
-        COMMIT;
+        userID :=0;
+        alreadyExists :=0;
+        SELECT UA.ID INTO userID FROM USERACCOUNTS UA WHERE UA.USERNAME=user_name;
+        
+        IF userID <> 0 THEN
+            SELECT COUNT(*) INTO alreadyExists FROM WISHLISTS WHERE id_user = userID AND id_item = itemID;
+            IF alreadyExists = 0 THEN
+                SELECT COUNT(*) INTO maxID FROM WISHLISTS;
+                maxID :=maxID +1;
+                INSERT INTO WISHLISTS(ID, ID_USER, ID_ITEM, NOTIFIED_FOR_AUCTION)
+                    VALUES(maxID, userID, itemID, 0);
+                assignedID := maxID;
+                COMMIT;
+            ELSE
+                assignedID:=null;
+            END IF;
+        ELSE
+            assignedID := null;
+        END IF;
         EXCEPTION WHEN OTHERS THEN
             assignedID := null;
             RAISE;

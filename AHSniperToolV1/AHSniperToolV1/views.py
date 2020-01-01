@@ -13,6 +13,7 @@ import cx_Oracle #connector library for OracleDB and PLSQL
 import mysql.connector as conektor #connector library for Underminejournal with MySQL 
 import requests as httpreq
 from datetime import datetime
+from datetime import timedelta
 import json
 
 #useful for hashing and salts
@@ -99,51 +100,7 @@ def about():
 
 @app.route('/testing', methods = ['GET', 'POST'])
 def testing():
-    """Randeaza si returneaza pagina de testare functionalitate"""
-    if not 'loggedUser' in request.cookies:
-        return redirect(url_for('doLogin'))
-    if request.method == "POST":
-        newItemID = str(request.form["itemID"])
-        newItemName = request.form["itemName"]
-        orclCursor = orclConnection.cursor()
-        statement = "INSERT INTO Items VALUES('"+newItemID + "','"+newItemName+"')"
-        orclCursor.execute(statement)
-        orclConnection.commit()
-        return redirect('/testing')
-    else:
-
-        try:
-            connection = \
-                conektor.connect(host='newswire.theunderminejournal.com',
-                                 database='newsstand', user='', password='')
-            if connection.is_connected():
-                #getting items from undermine journal
-                db_Info = connection.get_server_info()
-                print ('Connected to MySQL Server version ', db_Info)
-                cursor = connection.cursor()
-                cursor.execute('select id,name_enus FROM tblDBCItem')
-                records = cursor.fetchall()
-                print ('Total rows fetched:  ', len(records))
-            
-                #inserting items into my own db
-                cursorORCL = orclConnection.cursor() 
-                for record in records:
-                    itemID = str(record[0])
-                    itemName = record[1]
-                    cursorORCL.callproc('table_dml.insert_item', [itemID, itemName])
-            
-                cursorORCL.close()
-        except:
-            print("Unexpected error:", sys.exc_info()[0])
-        finally:
-            if connection.is_connected():
-                cursor.close()
-                connection.close()
-                print ('MySQL connection is closed')
-    return render_template('testing.html',
-                           title='Pagina pentru testare.',
-                           message='Items fetched from underminejournal newswire api'
-                           , items=records)
+    return "Testing not in progress"
 
 
 @app.route('/fetchItems') # no view here 
@@ -252,7 +209,7 @@ def searchAuctions():
         return redirect('browse')
     itemName = request.form["itemName"]
     cursorOracle = orclConnection.cursor()
-    statement = "SELECT I.NAME, A.buyout_value, A.current_bid, I.average_price, A.discount, A.realm, A.timeleft, A.id_auction, I.ID FROM AUCTIONS A, ITEMS I WHERE I.ID=A.ID_ITEM AND I.NAME='{}' ORDER BY A.discount".format(itemName)
+    statement = "SELECT I.NAME, A.buyout_value, A.current_bid, I.average_price, A.discount, A.realm, A.timeleft, A.id_auction, I.ID FROM AUCTIONS A, ITEMS I WHERE I.ID=A.ID_ITEM AND I.NAME='{}' ORDER BY A.discount DESC".format(itemName)
     print("Preparing statement:{}".format(statement))
     results=cursorOracle.execute(statement)
     return render_template(
@@ -262,4 +219,50 @@ def searchAuctions():
         year=datetime.now().year,
         items = results
         )
+
+@app.route('/addToWishList', methods=['POST'])
+def addToWishList():
+    itemID = request.headers.get('Itemid');
+    user = request.cookies.get("loggedUser",None)
+    print("User {} wants to add item {} to his wishlist.".format(user,itemID))
+    
+    orclCursor = orclConnection.cursor()
+    assignedID = orclCursor.var(int)
+    try:
+        orclCursor.callproc('table_dml.insert_wishlist',[user,itemID,assignedID])
+        if assignedID.getvalue() is None:
+            print("Itemul {} exista deja in wishlistul lui {}.".format(itemID,user))
+            return "The item {} already exists in your wishlist.".format(itemID)
+        else:
+            print("Inserted wishlist entry with id={}".format(assignedID.getvalue()))
+            return "Inserted wishlist entry with id={}".format(assignedID.getvalue())
+    except:
+        e = sys.exc_info()[0]
+        return "Exception occured:{}".format(e)
+    return "Successfully created wishlist entry with id {}.".format(assignedID.getvalue())
+
+@app.route('/addToReserved', methods=['POST'])
+def addToReserved():
+    auID = request.headers.get('AucID');
+    user = request.cookies.get("loggedUser",None)
+    print("User {} wants to add item {} to his wishlist.".format(user,auID))
+    if user == None:
+        return "Error. No user logged in."
+    orclCursor = orclConnection.cursor()
+    assignedID = orclCursor.var(int)
+    currentDate = cx_Oracle.Date.today()
+    expiryDate = cx_Oracle.Date.today() + timedelta(days=2)
+    
+    try:
+        orclCursor.callproc('table_dml.insert_reserved_auction',[user,auID,currentDate,expiryDate,assignedID])
+        if assignedID.getvalue() is None:
+            print("Itemul {} exista deja in wishlistul lui {}.".format(auID,user))
+            return "The auction {} is already reserved.".format(auID)
+        else:
+            print("Inserted reservation for {}, entry with id={}".format(auID,assignedID.getvalue()))
+            return "Reserved the auction {} with entry {}.".format(auID,assignedID.getvalue())
+    except:
+        e = sys.exc_info()[0]
+        return "Exception occured:{}".format(e)
+    return "Eroare b0$$."
 

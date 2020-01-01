@@ -17,6 +17,7 @@
 <input type="number" id="pageNumber" />
 <button onclick="goToPage()">GO!</button>
 
+    
 <table>
     <tr>
         <td>Item Name</td>
@@ -42,9 +43,9 @@
         <td>{{item[7]}}</td>
         <td>{{item[8]}}</td>
         <td>
-            <a href="">Add to wishlist</a>
+            <button onclick="addToWishList('{{ item[8] }}')">Add item to wishlist</button>
             <br />
-            <a href="">Add to reserved</a>
+            <button onclick="addToReserved('{{ item[7] }}')">Add auction to reserved</button>
         </td>
     </tr>
     {% endfor %}
