@@ -68,11 +68,28 @@ def account():
     print (request.cookies)
     if not 'loggedUser' in request.cookies:
         return redirect(url_for('doLogin'))
+    user = request.cookies.get("loggedUser")
+    userID = request.cookies.get("loggedUserID")
+    orclCursor = orclConnection.cursor()
+    
+    itemQuery = "SELECT I.name, i.id FROM ITEMS I, WISHLISTS W WHERE i.id = w.id_item AND w.id_user = {}".format(userID)
+    print("Executing item query: {}".format(itemQuery))
+    orclCursor.execute(itemQuery)
+    itemResults = orclCursor.fetchall()
+
+    auctionsQuery = "SELECT ra.id, i.name, a.discount, a.timeleft,  a.timeleft, ra.date_expires  FROM AUCTIONS A, RESERVED_AUCTIONS RA, ITEMS I WHERE a.id_auction=ra.id_auction AND a.id_item = I.id AND ra.id_user = {}".format(userID)
+    print("Executing reserved auctions query: {}".format(auctionsQuery))
+    orclCursor.execute(auctionsQuery)
+    auctionResults = orclCursor.fetchall()
+
+    print("Results of auctions query: {}".format(auctionResults))
     return render_template(
         'account.html',
         title="My Account",
-        message="Welcome {}".format(request.cookies['loggedUser']),
-        year=datetime.now().year
+        message="Welcome {}".format(user),
+        year=datetime.now().year,
+        items = itemResults,
+        auctions = auctionResults
         )
 
 
@@ -150,14 +167,16 @@ def doLogin():
         name = request.form.get('username')
         pwBytes = bytes(request.form.get('password'),encoding="utf-8")
         oracleCursor = orclConnection.cursor()
-        statement = "SELECT username,pw_hash, pw_salt FROM USERACCOUNTS WHERE USERNAME='{}'".format(name)
+        statement = "SELECT username,pw_hash, pw_salt, id FROM USERACCOUNTS WHERE USERNAME='{}'".format(name)
         print("Executing:{}".format(statement))
         oracleCursor.execute(statement)
         result = oracleCursor.fetchall()
         print(result)
         if(len(result) == 1): # s-a gasit un user cu acel nume
             fetched_pw_hash = result[0][1]
-            fetched_pw_salt = result[0][2]                 
+            fetched_pw_salt = result[0][2]
+            print("Type of resulkt[0][2]: {}".format( type(result)))
+            userID = str(result[0][3])
             pw_hash = hashlib.pbkdf2_hmac('sha256', pwBytes, fetched_pw_salt, 100000)
             
             print("Fetched pw_hash: {}".format(fetched_pw_hash))
@@ -165,6 +184,7 @@ def doLogin():
             if (fetched_pw_hash == pw_hash):
                 response = make_response(render_template('home.html',title='Welcome {}'.format(name), message = 'Successfully logged in.'))
                 response.set_cookie('loggedUser',name)
+                response.set_cookie('loggedUserID',userID)
                 return response
             else:
                 response = make_response(render_template('login.html',message = 'Username/PW combination not found'))

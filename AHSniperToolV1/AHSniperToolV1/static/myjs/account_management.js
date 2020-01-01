@@ -21,3 +21,11 @@ function validate() {
     else
         return false;
 }
+
+function removeFromWishList(itemID) {
+
+}
+
+function removeReservation(aucID) {
+
+}
