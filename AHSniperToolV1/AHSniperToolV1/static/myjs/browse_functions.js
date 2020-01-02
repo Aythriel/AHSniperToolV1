@@ -22,6 +22,7 @@ function addToWishList(itemID) {
     xmlHttp.send(null);
 }
 
+//function that adds an auction to the user's reserved auctions, works much like addToWishList
 function addToReserved(aucID) {
     console.log("S-a apelat functia addToReserved cu auction id-ul: " + aucID);
     var xmlHttp = new XMLHttpRequest();

@@ -5,7 +5,7 @@
 
 {% block content %}
 <h1> {{ title }} </h1>
-<p> {{message }} </p>
+<p> {{ message }} </p>
 
 <div class="jumbotron">
     <h1> Item wishlist </h1>
@@ -46,7 +46,7 @@
             <td>{{auc[3]}}</td>
             <td>{{auc[4]}}</td>
             <td>
-                <button onclick="removeReservation('{{ auc[0] }}')">Remove item from wishlist</button>
+                <button onclick="removeReservation('{{ auc[0] }}')">Cancel Reservation</button>
             </td>
         </tr>
         {% endfor %}

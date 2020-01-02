@@ -77,12 +77,11 @@ def account():
     orclCursor.execute(itemQuery)
     itemResults = orclCursor.fetchall()
 
-    auctionsQuery = "SELECT ra.id, i.name, a.discount, a.timeleft,  a.timeleft, ra.date_expires  FROM AUCTIONS A, RESERVED_AUCTIONS RA, ITEMS I WHERE a.id_auction=ra.id_auction AND a.id_item = I.id AND ra.id_user = {}".format(userID)
+    auctionsQuery = "SELECT a.id_auction, i.name, a.discount, a.timeleft, ra.date_expires  FROM AUCTIONS A, RESERVED_AUCTIONS RA, ITEMS I WHERE a.id_auction=ra.id_auction AND a.id_item = I.id AND ra.id_user = {}".format(userID)
     print("Executing reserved auctions query: {}".format(auctionsQuery))
     orclCursor.execute(auctionsQuery)
     auctionResults = orclCursor.fetchall()
 
-    print("Results of auctions query: {}".format(auctionResults))
     return render_template(
         'account.html',
         title="My Account",
@@ -115,51 +114,7 @@ def about():
         message='Your application description page.'
     )
 
-@app.route('/testing', methods = ['GET', 'POST'])
-def testing():
-    return "Testing not in progress"
 
-
-@app.route('/fetchItems') # no view here 
-def fetchItems():
-    cursor = orclConnection.cursor()
-    cursor.execute("SELECT * FROM ITEMS")
-    results = cursor.fetchmany(5)
-    return str(results)
-
-
-
-@app.route('/fetchDump')    # no view here
-def fetchDump():
-    global token
-    print("S-a intrat in fetch dump.")
-    if token == "":
-        print("S-a gasit token null")
-        parameters = {'grant_type' : 'client_credentials',
-                    'client_id' : clientID,
-                    'client_secret' : clientSecret}
-        resToken = httpreq.post(tokenScope,data=parameters)
-        print(resToken.text)
-        jsonResponse =json.loads(resToken.text)
-        token = jsonResponse['access_token']
-        print("Token set to:{}".format(token))
-    
-    print("Fetching AH Dump location")
-
-    parameters = {'locale' : 'en_GB',
-                  'access_token' : token}
-    url = ahScope + 'access_token=' + token + '&locale=en_GB'
-    res = httpreq.get(url)
-
-    print(res)
-    jsonResponse = json.loads(res.text)
-    return jsonResponse["files"][0]["url"]
-    
-
-@app.route('/delete/<int:idItem>')
-def doDelete(idItem):
-    #insert code to delete item from DB here
-    return redirect('/testing')
 
 @app.route('/login',methods=['POST','GET'])
 def doLogin():
@@ -212,7 +167,6 @@ def createUser():
     pw_hash = hashlib.pbkdf2_hmac('sha256', passwordBytes, saltBytes, 100000)
     pw_hashed = pw_hash.hex()
     
-    #pw_hashed = pw_hash.decode(encoding="ascii")
     print("pw_hash:{} length:{}".format(pw_hash,len(pw_hash)))
     print("salt length: {}".format(len(saltBytes)))
     oracleCursor = orclConnection.cursor()
@@ -230,8 +184,9 @@ def searchAuctions():
     itemName = request.form["itemName"]
     cursorOracle = orclConnection.cursor()
     statement = "SELECT I.NAME, A.buyout_value, A.current_bid, I.average_price, A.discount, A.realm, A.timeleft, A.id_auction, I.ID FROM AUCTIONS A, ITEMS I WHERE I.ID=A.ID_ITEM AND I.NAME='{}' ORDER BY A.discount DESC".format(itemName)
-    print("Preparing statement:{}".format(statement))
-    results=cursorOracle.execute(statement)
+    #I.NAME, A.buyout_value, A.current_bid, I.average_price, A.discount, A.realm, A.timeleft, A.id_auction, I.ID
+    print("Executing:{}".format(statement))
+    results=cursorOracle.execute(statement).fetchall()
     return render_template(
         'browse.html',
         title='Search',
@@ -240,49 +195,5 @@ def searchAuctions():
         items = results
         )
 
-@app.route('/addToWishList', methods=['POST'])
-def addToWishList():
-    itemID = request.headers.get('Itemid');
-    user = request.cookies.get("loggedUser",None)
-    print("User {} wants to add item {} to his wishlist.".format(user,itemID))
-    
-    orclCursor = orclConnection.cursor()
-    assignedID = orclCursor.var(int)
-    try:
-        orclCursor.callproc('table_dml.insert_wishlist',[user,itemID,assignedID])
-        if assignedID.getvalue() is None:
-            print("Itemul {} exista deja in wishlistul lui {}.".format(itemID,user))
-            return "The item {} already exists in your wishlist.".format(itemID)
-        else:
-            print("Inserted wishlist entry with id={}".format(assignedID.getvalue()))
-            return "Inserted wishlist entry with id={}".format(assignedID.getvalue())
-    except:
-        e = sys.exc_info()[0]
-        return "Exception occured:{}".format(e)
-    return "Successfully created wishlist entry with id {}.".format(assignedID.getvalue())
 
-@app.route('/addToReserved', methods=['POST'])
-def addToReserved():
-    auID = request.headers.get('AucID');
-    user = request.cookies.get("loggedUser",None)
-    print("User {} wants to add item {} to his wishlist.".format(user,auID))
-    if user == None:
-        return "Error. No user logged in."
-    orclCursor = orclConnection.cursor()
-    assignedID = orclCursor.var(int)
-    currentDate = cx_Oracle.Date.today()
-    expiryDate = cx_Oracle.Date.today() + timedelta(days=2)
-    
-    try:
-        orclCursor.callproc('table_dml.insert_reserved_auction',[user,auID,currentDate,expiryDate,assignedID])
-        if assignedID.getvalue() is None:
-            print("Itemul {} exista deja in wishlistul lui {}.".format(auID,user))
-            return "The auction {} is already reserved.".format(auID)
-        else:
-            print("Inserted reservation for {}, entry with id={}".format(auID,assignedID.getvalue()))
-            return "Reserved the auction {} with entry {}.".format(auID,assignedID.getvalue())
-    except:
-        e = sys.exc_info()[0]
-        return "Exception occured:{}".format(e)
-    return "Eroare b0$$."
 

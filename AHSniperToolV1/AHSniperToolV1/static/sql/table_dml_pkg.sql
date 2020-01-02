@@ -7,14 +7,14 @@ CREATE OR REPLACE PACKAGE TABLE_DML AUTHID CURRENT_USER AS
     PROCEDURE DELETE_AUCTION(auctionID IN NUMBER);
     
     PROCEDURE INSERT_RESERVED_AUCTION(userName IN VARCHAR2, auctionID IN NUMBER, dateMade IN DATE, dateExpires IN DATE, assignedID OUT NUMBER);
-    PROCEDURE DELETE_RESERVED_AUCTION(reservedAuctionID IN NUMBER);
+    PROCEDURE DELETE_RESERVED_AUCTION(auctionID IN NUMBER, userID IN NUMBER, result OUT CHAR);
 
     PROCEDURE INSERT_USER(username IN VARCHAR2, email IN VARCHAR2, realm IN VARCHAR2, funds IN NUMBER DEFAULT 0, pwHash IN RAW, pwSalt IN RAW, assignedID OUT NUMBER);
     PROCEDURE DELETE_USER(userID IN NUMBER);
     PROCEDURE UPDATE_USER_PARAM(userID IN NUMBER, paramToUpdate IN VARCHAR2, newValue IN VARCHAR2, opRez OUT BOOLEAN);
     
     PROCEDURE INSERT_WISHLIST(user_name IN VARCHAR2, itemID IN NUMBER, assignedID OUT NUMBER);
-    PROCEDURE DELETE_WISHLIST(wishlistID IN NUMBER);
+    PROCEDURE DELETE_WISHLIST(userID IN NUMBER, itemID in NUMBER, opRez out CHAR);
 END;
 /
 create or replace PACKAGE BODY TABLE_DML IS
@@ -79,7 +79,8 @@ create or replace PACKAGE BODY TABLE_DML IS
         IF userID <> 0 THEN
             SELECT COUNT(*) INTO alreadyExists FROM RESERVED_AUCTIONS WHERE ID_AUCTION = auctionID;
             IF alreadyExists = 0 THEN
-                SELECT COUNT(*) INTO maxID FROM RESERVED_AUCTIONS;
+                maxID:=0;
+                SELECT MAX(ID) INTO maxID FROM RESERVED_AUCTIONS;
                 maxID := maxID + 1;
                 INSERT INTO RESERVED_AUCTIONS(ID, ID_USER, ID_AUCTION, DATE_MADE, DATE_EXPIRES) VALUES (maxID, userID, auctionID, dateMade, dateExpires);
                 assignedID := maxID;
@@ -95,18 +96,21 @@ create or replace PACKAGE BODY TABLE_DML IS
             raise;
     END INSERT_RESERVED_AUCTION;
 
-    PROCEDURE DELETE_RESERVED_AUCTION(reservedAuctionID IN NUMBER) IS
+    PROCEDURE DELETE_RESERVED_AUCTION(auctionID IN NUMBER, userID IN NUMBER, result OUT CHAR) IS
     BEGIN
-        DELETE FROM RESERVED_AUCTIONS WHERE id = reservedAuctionID;
+        DELETE FROM RESERVED_AUCTIONS WHERE id_auction=auctionID;
+        result := 'T';
         COMMIT;
         EXCEPTION WHEN OTHERS THEN
+            result := 'F';
             RAISE;    
     END DELETE_RESERVED_AUCTION;
 
     PROCEDURE INSERT_USER(username IN VARCHAR2, email IN VARCHAR2, realm IN VARCHAR2, funds IN NUMBER DEFAULT 0, pwHash IN RAW, pwSalt IN RAW, assignedID OUT NUMBER) IS
      maxID NUMBER;
     BEGIN
-        SELECT COUNT(*) INTO maxID FROM USERACCOUNTS;
+        maxID:=0;
+        SELECT MAX(ID) INTO maxID FROM USERACCOUNTS;
         maxID:= maxID + 1;
         INSERT INTO USERACCOUNTS(ID, USERNAME, EMAIL, REALM, FUNDS, PW_HASH, PW_SALT)
             VALUES(maxID,username,email,realm,funds,pwHash,pwSalt);
@@ -154,7 +158,8 @@ create or replace PACKAGE BODY TABLE_DML IS
         IF userID <> 0 THEN
             SELECT COUNT(*) INTO alreadyExists FROM WISHLISTS WHERE id_user = userID AND id_item = itemID;
             IF alreadyExists = 0 THEN
-                SELECT COUNT(*) INTO maxID FROM WISHLISTS;
+                maxID:=0;
+                SELECT MAX(ID) INTO maxID FROM WISHLISTS;
                 maxID :=maxID +1;
                 INSERT INTO WISHLISTS(ID, ID_USER, ID_ITEM, NOTIFIED_FOR_AUCTION)
                     VALUES(maxID, userID, itemID, 0);
@@ -171,11 +176,13 @@ create or replace PACKAGE BODY TABLE_DML IS
             RAISE;
     END INSERT_WISHLIST;
 
-    PROCEDURE DELETE_WISHLIST(wishlistID IN NUMBER) IS 
+    PROCEDURE DELETE_WISHLIST(userID IN NUMBER, itemID in NUMBER, opRez out CHAR) IS 
     BEGIN
-        DELETE FROM WISHLISTS WHERE id = wishlistID;
+        DELETE FROM WISHLISTS W WHERE w.id_item = itemID AND w.id_user=userID;
+        opRez := 'T';
         COMMIT;
         EXCEPTION WHEN OTHERS THEN
+            opRez := 'F';
             RAISE;
     END DELETE_WISHLIST;
 

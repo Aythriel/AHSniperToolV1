@@ -23,9 +23,36 @@ function validate() {
 }
 
 function removeFromWishList(itemID) {
-
+    console.log("S-a apelat functia removeFromWishList cu id-ul de item: " + itemID);
+    var xmlHttp = new XMLHttpRequest();
+    xmlHttp.onreadystatechange = function () {
+        if (xmlHttp.readyState == 4 && xmlHttp.status == 200) {
+            console.log("Response:" + xmlHttp.responseText);
+            alert(xmlHttp.responseText);
+            if (xmlHttp.responseText.includes("Ok")) {
+                document.getElementById("item" + itemID).hidden = true; // hides table row if the item was successfully removed
+            }
+        }
+    }
+    xmlHttp.open("DELETE", '/removeFromWishList', true); // true for asynchronous 
+    xmlHttp.setRequestHeader("itemID", itemID);
+    xmlHttp.send(null);
 }
 
 function removeReservation(aucID) {
-
+    console.log("S-a apelat functia removeReservation cu id-ul de licitatie: " + aucID);
+    var xmlHttp = new XMLHttpRequest();
+    xmlHttp.onreadystatechange = function () {
+        if (xmlHttp.readyState == 4 && xmlHttp.status == 200) {
+            console.log("Response:" + xmlHttp.responseText);
+            alert(xmlHttp.responseText);
+            if (xmlHttp.responseText.includes("Ok")) {
+                document.getElementById("auc" + aucID).hidden = true; // hides table row if the reservation was successfully removed
+            }
+        }
+    }
+    xmlHttp.open("DELETE", '/removeReservation', true); // true for asynchronous 
+    xmlHttp.setRequestHeader("aucID", aucID);
+    xmlHttp.send(null);
 }
+

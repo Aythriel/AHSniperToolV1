@@ -29,6 +29,9 @@
     <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="AHSniperToolV1\ajax_handlers.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="AHSniperToolV1\db_config.py">
       <SubType>Code</SubType>
     </Compile>
@@ -69,7 +72,6 @@
     <Content Include="AHSniperToolV1\templates\account.html" />
     <Content Include="AHSniperToolV1\templates\browse.html" />
     <Content Include="AHSniperToolV1\templates\login.html" />
-    <Content Include="AHSniperToolV1\templates\testing.html" />
     <Content Include="requirements.txt" />
     <Content Include="AHSniperToolV1\static\content\bootstrap.css" />
     <Content Include="AHSniperToolV1\static\content\bootstrap.min.css" />
