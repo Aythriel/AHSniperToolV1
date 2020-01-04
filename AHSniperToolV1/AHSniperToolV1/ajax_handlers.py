@@ -7,6 +7,9 @@ from cx_Oracle import FIXED_CHAR, Date
 from datetime import datetime
 from datetime import timedelta
 
+import hashlib,binascii
+from os import urandom
+
 orclConnection = db_config.OracleConn()
 undermineConnection = db_config.UndermineConn()
 
@@ -103,3 +106,49 @@ def removeReservation():
         print("Database Error: {}".format(e.args))
         return "Exception occured:{}".format(e.args)
     return "Successfully failed."
+
+@app.route('/updatePassword', methods=['PUT'])
+def updatePassword():
+    userID = request.cookies.get("loggedUserID",None)
+    oldPW = request.headers.get('oldPW',None)
+    newPW = request.headers.get('newPW',None)
+    if userID == None or oldPW == None or newPW == None :
+        return "A parameter is null or could not be obtained. Failed to update pw."
+    else:
+
+        orclCursor = orclConnection.cursor()
+        statement = "SELECT pw_hash,pw_salt, id FROM USERACCOUNTS WHERE ID={}".format(userID)
+        orclCursor.execute(statement)
+        result = orclCursor.fetchone()
+
+        oldPWBytes = bytes(oldPW,encoding="utf-8")
+        oldPWHashed = hashlib.pbkdf2_hmac('sha256', oldPWBytes, result[1], 100000)
+        if (oldPWHashed == result[0]):
+            #old password matches the one in the database
+            #proceed to updating it.
+            newPWBytes = bytes(newPW,encoding="utf-8")
+            newPWHashed = hashlib.pbkdf2_hmac('sha256', newPWBytes, result[1], 100000)
+            opRez = orclCursor.var(int)
+            orclCursor.callproc('table_dml.update_user_pw',[userID,newPWHashed,opRez] )
+            if opRez.getvalue() == 0:
+                return "Ok. Password changed."
+            else:
+                return "Failed to update password."
+        else:
+            return "Failed to update password. Passwords don't match."
+
+@app.route("/updateUserParam" , methods=["PUT"])
+def updateParam():
+    param = request.headers.get("param",None)
+    newVal = request.headers.get("value",None)
+    userID = request.cookies.get("loggedUserID",None)
+    if param == None or newVal == None:
+        return "Failed to update parameter."
+    else:
+        orclCursor = orclConnection.cursor()
+        opRez = orclCursor.var(int)
+        orclCursor.callproc('table_dml.update_user_param',[userID,param,newVal,opRez])
+        if opRez.getvalue() == 0:
+            return "Ok. {} changed.".format(param)
+        else:
+            return "Failed to update {}.".format(param)

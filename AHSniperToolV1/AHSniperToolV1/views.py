@@ -73,22 +73,25 @@ def account():
     orclCursor = orclConnection.cursor()
     
     itemQuery = "SELECT I.name, i.id FROM ITEMS I, WISHLISTS W WHERE i.id = w.id_item AND w.id_user = {}".format(userID)
-    print("Executing item query: {}".format(itemQuery))
     orclCursor.execute(itemQuery)
     itemResults = orclCursor.fetchall()
 
     auctionsQuery = "SELECT a.id_auction, i.name, a.discount, a.timeleft, ra.date_expires  FROM AUCTIONS A, RESERVED_AUCTIONS RA, ITEMS I WHERE a.id_auction=ra.id_auction AND a.id_item = I.id AND ra.id_user = {}".format(userID)
-    print("Executing reserved auctions query: {}".format(auctionsQuery))
     orclCursor.execute(auctionsQuery)
     auctionResults = orclCursor.fetchall()
 
+    accountQuery = "SELECT username, email, realm, funds FROM USERACCOUNTS WHERE ID={}".format(userID)
+    orclCursor.execute(accountQuery)
+    accountResults = orclCursor.fetchone()
+
     return render_template(
         'account.html',
-        title="My Account",
-        message="Welcome {}".format(user),
+ #       title="My Account",
+ #       message="Welcome {}".format(user),
         year=datetime.now().year,
         items = itemResults,
-        auctions = auctionResults
+        auctions = auctionResults,
+        accInfo = accountResults
         )
 
 
@@ -151,8 +154,8 @@ def doLogin():
     elif request.method == 'GET':
         if 'loggedUser' in request.cookies:
             return redirect(url_for('home'))
-        return render_template('login.html',title='Pagina pentru login.',
-                           message='Baga user si parola bo$$.'
+        return render_template('login.html',title='Login page.',
+                           message='Insert username and pw bo$$.'
                            )
 
 @app.route('/createuser', methods=['POST'])
@@ -184,7 +187,7 @@ def searchAuctions():
     itemName = request.form["itemName"]
     cursorOracle = orclConnection.cursor()
     statement = "SELECT I.NAME, A.buyout_value, A.current_bid, I.average_price, A.discount, A.realm, A.timeleft, A.id_auction, I.ID FROM AUCTIONS A, ITEMS I WHERE I.ID=A.ID_ITEM AND I.NAME='{}' ORDER BY A.discount DESC".format(itemName)
-    #I.NAME, A.buyout_value, A.current_bid, I.average_price, A.discount, A.realm, A.timeleft, A.id_auction, I.ID
+  
     print("Executing:{}".format(statement))
     results=cursorOracle.execute(statement).fetchall()
     return render_template(
