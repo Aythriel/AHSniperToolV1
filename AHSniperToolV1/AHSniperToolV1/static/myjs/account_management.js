@@ -113,3 +113,23 @@ function updateParam(param, oldVal) {
     ajaxReq.send(null);
     
 }
+
+function sendEmails(userEmail) {
+    var ajaxReq = new XMLHttpRequest();
+    ajaxReq.onreadystatechange = function () {
+        if (ajaxReq.readyState == 4 && ajaxReq.status == 200) {
+            console.log("Response:" + ajaxReq.responseText);
+            if (ajaxReq.responseText.includes("Ok")) {
+                alert("Emails sent successfully.");
+            }
+            else {
+                console.log("Response:" + ajaxReq.responseText);
+                alert("Failed. See console for more detailed explanation.");
+            }
+        }
+    }
+    ajaxReq.open("GET", "/sendEmails", true);
+    ajaxReq.setRequestHeader("userEmail", userEmail);
+    ajaxReq.send(null);
+
+}
