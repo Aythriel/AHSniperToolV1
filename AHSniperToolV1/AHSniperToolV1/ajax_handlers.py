@@ -7,6 +7,19 @@ from cx_Oracle import FIXED_CHAR, Date
 from datetime import datetime
 from datetime import timedelta
 
+<<<<<<< Updated upstream
+=======
+#for password hashing
+import hashlib,binascii
+from os import urandom
+
+#for emails
+import smtplib, ssl
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
+from getpass import getpass
+
+>>>>>>> Stashed changes
 orclConnection = db_config.OracleConn()
 undermineConnection = db_config.UndermineConn()
 
@@ -102,4 +115,103 @@ def removeReservation():
         e = sys.exc_info()[0]
         print("Database Error: {}".format(e.args))
         return "Exception occured:{}".format(e.args)
+<<<<<<< Updated upstream
     return "Successfully failed."
+=======
+    return "Successfully failed."
+
+@app.route('/updatePassword', methods=['PUT'])
+def updatePassword():
+    userID = request.cookies.get("loggedUserID",None)
+    oldPW = request.headers.get('oldPW',None)
+    newPW = request.headers.get('newPW',None)
+    if userID == None or oldPW == None or newPW == None :
+        return "A parameter is null or could not be obtained. Failed to update pw."
+    else:
+
+        orclCursor = orclConnection.cursor()
+        statement = "SELECT pw_hash,pw_salt, id FROM USERACCOUNTS WHERE ID={}".format(userID)
+        orclCursor.execute(statement)
+        result = orclCursor.fetchone()
+
+        oldPWBytes = bytes(oldPW,encoding="utf-8")
+        oldPWHashed = hashlib.pbkdf2_hmac('sha256', oldPWBytes, result[1], 100000)
+        if (oldPWHashed == result[0]):
+            #old password matches the one in the database
+            #proceed to updating it.
+            newPWBytes = bytes(newPW,encoding="utf-8")
+            newPWHashed = hashlib.pbkdf2_hmac('sha256', newPWBytes, result[1], 100000)
+            opRez = orclCursor.var(int)
+            orclCursor.callproc('table_dml.update_user_pw',[userID,newPWHashed,opRez] )
+            if opRez.getvalue() == 0:
+                return "Ok. Password changed."
+            else:
+                return "Failed to update password."
+        else:
+            return "Failed to update password. Passwords don't match."
+
+@app.route("/updateUserParam" , methods=["PUT"])
+def updateParam():
+    param = request.headers.get("param",None)
+    newVal = request.headers.get("value",None)
+    userID = request.cookies.get("loggedUserID",None)
+    if param == None or newVal == None:
+        return "Failed to update parameter."
+    else:
+        orclCursor = orclConnection.cursor()
+        opRez = orclCursor.var(int)
+        orclCursor.callproc('table_dml.update_user_param',[userID,param,newVal,opRez])
+        if opRez.getvalue() == 0:
+            return "Ok. {} changed.".format(param)
+        else:
+            return "Failed to update {}.".format(param)
+
+@app.route("/sendEmails", methods=["GET"])
+def sendEmails():
+    userID = request.cookies.get("loggedUserID", None)
+    userName = request.cookies.get("loggedUser",None)
+    userEmail = request.headers.get("userEmail",None)
+    if userEmail == None or userID == None or userName==None:
+        print("userID: {}; userName: {}; userEmail: {}".format(userID,userName, userEmail))
+        return "Failed to send email."
+    
+    senderEmail = "breaktdg@gmail.com"
+
+    cursorOrcl = orclConnection.cursor()
+    wlQ = """SELECT i.name, a.buyout_value, a.discount, a.timeleft FROM WISHLISTS W, ITEMS I, AUCTIONS A
+        WHERE w.id_item=i.id AND a.id_item=w.id_item AND A.discount>50 AND w.notified_for_auction=0 AND w.id_user={}""".format(userID)
+    cursorOrcl.execute(wlQ)
+    results = cursorOrcl.fetchall()
+    
+    message = MIMEMultipart("alternative")
+    message["Subject"] = "{} - AHST has found some deals!".format(userName)
+    message["From"] = senderEmail
+    message["To"] = userEmail
+    
+    html = """\
+        <html>
+          <body>
+            <p>Hi there {}! <br>
+               How are you? We at AHST hope you've had some jolly good holidays. To make them even better, we've found some deals for the items in your wishlist!<br\>
+               Check these out!
+            </p><br\>
+        """.format(userName)
+    for result in results:
+        html = html + " <p> {} for just {} gold(s). That's a {} discount! Time left: {} </p>".format(result[0],(result[1]-result[1]%10000)/10000,result[2], result[3])
+
+    html = html + "</body></html>"
+    
+    port = 465  # For SSL
+    password = getpass("PW for gmail:")
+    emailpart = MIMEText(html,"html")
+    message.attach(emailpart)
+    # Create a secure SSL context
+    context = ssl.create_default_context()
+
+    with smtplib.SMTP_SSL("smtp.gmail.com", port, context=context) as server:
+        server.login(senderEmail, password)
+        server.sendmail(senderEmail, userEmail, message.as_string())
+
+    return "Ok. Emails sent."
+        
+>>>>>>> Stashed changes

@@ -8,6 +8,23 @@
 <p> {{ message }} </p>
 
 <div class="jumbotron">
+<<<<<<< Updated upstream
+=======
+    <h1> Account Information </h1>
+    <p> Email:</p> <input id="email" type="text" value="{{accInfo[1]}}" /> <button onclick="updateParam('email','{{ accInfo[1]}}')"> Update</button> <br />
+    <p> Realm:</p> <input id="realm" typeof="text" value="{{accInfo[2]}}" /> <button onclick="updateParam('realm','{{ accInfo[2]}}')"> Update </button> <br />
+    <p> Account Funds:</p> <input id="funds" type="number" value="{{accInfo[3]}}" /> <button onclick="updateParam('funds',{{accInfo[3]}})">Update</button><br />
+    <p> Password Update</p> <br />
+    <p>Old password</p><input id="oldPW" type="password" /><br />
+    <p>New password</p><input id="newPW" type="password" /><br />
+    <p>Confirm new password</p><input id="confirmPW" type="password" /><br />
+    <button onclick="updatePassword()">Update password.</button><br />
+    <p>Send Email notification for items in wishlist with discount > 50</p>
+    <button onclick="sendEmails('{{accInfo[1]}}')">Send Emails</button>
+</div>
+<br />
+<div class="jumbotron">
+>>>>>>> Stashed changes
     <h1> Item wishlist </h1>
     <table>
         <tr>

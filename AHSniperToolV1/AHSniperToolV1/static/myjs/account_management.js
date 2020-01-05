@@ -56,3 +56,83 @@ function removeReservation(aucID) {
     xmlHttp.send(null);
 }
 
+<<<<<<< Updated upstream
+=======
+function updatePassword() {
+    var newPW = document.getElementById("newPW").value;
+    var confirmPW = document.getElementById("confirmPW").value;
+    var oldPW = document.getElementById("oldPW").value;
+    console.log("newPW:" + newPW + "; oldPW:" + oldPW + "; confirmPW:" + confirmPW);
+    if (newPW == confirmPW) {
+        var ajaxReq = new XMLHttpRequest();
+        ajaxReq.onreadystatechange = function () {
+            if (ajaxReq.readyState == 4 && ajaxReq.status == 200) {
+                console.log("Response:" + ajaxReq.responseText);
+                if (ajaxReq.responseText.includes("Ok") ) {
+                    alert("Password changed successfully. Logging you out.");
+                    logout();
+                }
+            }
+        }
+        ajaxReq.open("PUT","/updatePassword", true);
+        ajaxReq.setRequestHeader("oldPW", oldPW);
+        ajaxReq.setRequestHeader("newPW", newPW);
+        ajaxReq.send(null);
+    }
+    else {
+        alert("New password doesn't match with confirmation.")
+        return;
+    }
+       
+}
+
+function updateParam(param, oldVal) {
+    var val = document.getElementById(param).value;
+    if (val == oldVal) {
+        alert("Change " + param + " before trying to update.");
+        return;
+    }
+
+    
+    console.log("Parameter to update:" + param +"; OldValue:"+ oldVal+"; New Value:"+val);
+    
+    var ajaxReq = new XMLHttpRequest();
+    ajaxReq.onreadystatechange = function () {
+        if (ajaxReq.readyState == 4 && ajaxReq.status == 200) {
+            console.log("Response:" + ajaxReq.responseText);
+            if (ajaxReq.responseText.includes("Ok")) {
+                alert(param + " changed successfully.");
+            }
+            else {
+                console.log("Response:" + ajaxReq.responseText);
+                alert("Failed. See console for more detailed explanation.");
+            }
+        }
+    }
+    ajaxReq.open("PUT", "/updateUserParam", true);
+    ajaxReq.setRequestHeader("param", param);
+    ajaxReq.setRequestHeader("value", val);
+    ajaxReq.send(null);
+    
+}
+
+function sendEmails(userEmail) {
+    var ajaxReq = new XMLHttpRequest();
+    ajaxReq.onreadystatechange = function () {
+        if (ajaxReq.readyState == 4 && ajaxReq.status == 200) {
+            console.log("Response:" + ajaxReq.responseText);
+            if (ajaxReq.responseText.includes("Ok")) {
+                alert("Emails sent successfully.");
+            }
+            else {
+                console.log("Response:" + ajaxReq.responseText);
+                alert("Failed. See console for more detailed explanation.");
+            }
+        }
+    }
+    ajaxReq.open("GET", "/sendEmails", true);
+    ajaxReq.setRequestHeader("userEmail", userEmail);
+    ajaxReq.send(null);
+
+}
+>>>>>>> Stashed changes
