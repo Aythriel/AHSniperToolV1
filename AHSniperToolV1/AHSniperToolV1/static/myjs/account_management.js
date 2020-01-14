@@ -56,6 +56,7 @@ function removeReservation(aucID) {
     xmlHttp.send(null);
 }
 
+
 function updatePassword() {
     var newPW = document.getElementById("newPW").value;
     var confirmPW = document.getElementById("confirmPW").value;
@@ -85,7 +86,9 @@ function updatePassword() {
 }
 
 function updateParam(param, oldVal) {
+
     val = document.getElementById(param).value;
+
     if (val == oldVal) {
         alert("Change " + param + " before trying to update.");
         return;
@@ -133,3 +136,5 @@ function sendEmails(userEmail) {
     ajaxReq.send(null);
 
 }
+
+

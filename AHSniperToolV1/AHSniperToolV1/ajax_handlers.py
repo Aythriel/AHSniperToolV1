@@ -7,6 +7,7 @@ from cx_Oracle import FIXED_CHAR, Date
 from datetime import datetime
 from datetime import timedelta
 
+
 #for password hashing
 import hashlib,binascii
 from os import urandom
@@ -16,6 +17,7 @@ import smtplib, ssl
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from getpass import getpass
+
 
 orclConnection = db_config.OracleConn()
 undermineConnection = db_config.UndermineConn()
@@ -112,6 +114,7 @@ def removeReservation():
         e = sys.exc_info()[0]
         print("Database Error: {}".format(e.args))
         return "Exception occured:{}".format(e.args)
+
     return "Successfully failed."
 
 @app.route('/updatePassword', methods=['PUT'])
@@ -207,3 +210,4 @@ def sendEmails():
         server.sendmail(senderEmail, userEmail, message.as_string())
 
     return "Ok. Emails sent."
+

@@ -1,9 +1,12 @@
 {% extends "layout.html" %}
-
+{% block head %}
+<script src=" {{ url_for('static', filename = 'myjs/account_management.js') }}"></script>
+{% endblock %}
 {% block content %}
 
 <h2>{{ title }}.</h2>
 <h3>{{ message }}</h3>
+
 
 <p>
     This app has been developed as part of a university project for databases and web technologies. 
@@ -12,6 +15,17 @@
     <p>
         This project is not deployable in its current state. You can manually trigger email sending with wishlist notifications via the button in account.
     </p>
+
+<p>
+    This app has been developed as part of a university project for databases and web technologies.
+</p>
+<br />
+
+<p>
+    This project is not deployable in its current state. You can manually trigger email sending with wishlist notifications via the button in account.
+</p>
+
+
 <address>
     <strong>App Developer:</strong>   <a href="mailto:andrei.cana@protonmail.com">andrei.cana@protonmail.com</a><br />
 </address>
