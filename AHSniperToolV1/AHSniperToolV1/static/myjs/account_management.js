@@ -1,6 +1,6 @@
-//function to delete all cookies; TODO: delete only loggedUser
+//function to delete all cookies; since no other cookies are used for functionality, this is ok - bad practice nonetheless
 function logout() { 
-    alert('s-a apelat functia de logout.');
+    console.log('s-a apelat functia de logout.');
     var cookies = document.cookie.split(";");
     console.log(cookies)
     for (var i = 0; i < cookies.length; i++) {
@@ -56,8 +56,7 @@ function removeReservation(aucID) {
     xmlHttp.send(null);
 }
 
-<<<<<<< Updated upstream
-=======
+
 function updatePassword() {
     var newPW = document.getElementById("newPW").value;
     var confirmPW = document.getElementById("confirmPW").value;
@@ -87,7 +86,9 @@ function updatePassword() {
 }
 
 function updateParam(param, oldVal) {
-    var val = document.getElementById(param).value;
+
+    val = document.getElementById(param).value;
+
     if (val == oldVal) {
         alert("Change " + param + " before trying to update.");
         return;
@@ -135,4 +136,5 @@ function sendEmails(userEmail) {
     ajaxReq.send(null);
 
 }
->>>>>>> Stashed changes
+
+

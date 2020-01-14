@@ -7,8 +7,7 @@ from cx_Oracle import FIXED_CHAR, Date
 from datetime import datetime
 from datetime import timedelta
 
-<<<<<<< Updated upstream
-=======
+
 #for password hashing
 import hashlib,binascii
 from os import urandom
@@ -19,7 +18,7 @@ from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from getpass import getpass
 
->>>>>>> Stashed changes
+
 orclConnection = db_config.OracleConn()
 undermineConnection = db_config.UndermineConn()
 
@@ -115,9 +114,7 @@ def removeReservation():
         e = sys.exc_info()[0]
         print("Database Error: {}".format(e.args))
         return "Exception occured:{}".format(e.args)
-<<<<<<< Updated upstream
-    return "Successfully failed."
-=======
+
     return "Successfully failed."
 
 @app.route('/updatePassword', methods=['PUT'])
@@ -174,7 +171,7 @@ def sendEmails():
     if userEmail == None or userID == None or userName==None:
         print("userID: {}; userName: {}; userEmail: {}".format(userID,userName, userEmail))
         return "Failed to send email."
-    
+
     senderEmail = "breaktdg@gmail.com"
 
     cursorOrcl = orclConnection.cursor()
@@ -182,12 +179,12 @@ def sendEmails():
         WHERE w.id_item=i.id AND a.id_item=w.id_item AND A.discount>50 AND w.notified_for_auction=0 AND w.id_user={}""".format(userID)
     cursorOrcl.execute(wlQ)
     results = cursorOrcl.fetchall()
-    
+
     message = MIMEMultipart("alternative")
     message["Subject"] = "{} - AHST has found some deals!".format(userName)
     message["From"] = senderEmail
     message["To"] = userEmail
-    
+
     html = """\
         <html>
           <body>
@@ -200,7 +197,7 @@ def sendEmails():
         html = html + " <p> {} for just {} gold(s). That's a {} discount! Time left: {} </p>".format(result[0],(result[1]-result[1]%10000)/10000,result[2], result[3])
 
     html = html + "</body></html>"
-    
+
     port = 465  # For SSL
     password = getpass("PW for gmail:")
     emailpart = MIMEText(html,"html")
@@ -213,5 +210,4 @@ def sendEmails():
         server.sendmail(senderEmail, userEmail, message.as_string())
 
     return "Ok. Emails sent."
-        
->>>>>>> Stashed changes
+

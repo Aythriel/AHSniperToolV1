@@ -1,22 +1,23 @@
-CREATE OR REPLACE PACKAGE TABLE_DML AUTHID CURRENT_USER AS
+create or replace PACKAGE TABLE_DML AUTHID CURRENT_USER AS
     PROCEDURE INSERT_ITEM(itemID IN NUMBER, itemName IN VARCHAR2, estimatedValue IN NUMBER DEFAULT 0);
     PROCEDURE UPDATE_ITEM_NAME(itemID IN NUMBER, newName IN VARCHAR2);
 	PROCEDURE UPDATE_ITEM_PRICE(itemID IN NUMBER, newPrice IN NUMBER);
 
     PROCEDURE INSERT_AUCTION(auctionID IN NUMBER, realm IN VARCHAR2, buyout NUMBER, currentBid IN NUMBER, timeleft IN VARCHAR2, itemID IN NUMBER);
     PROCEDURE DELETE_AUCTION(auctionID IN NUMBER);
-    
+
     PROCEDURE INSERT_RESERVED_AUCTION(userName IN VARCHAR2, auctionID IN NUMBER, dateMade IN DATE, dateExpires IN DATE, assignedID OUT NUMBER);
     PROCEDURE DELETE_RESERVED_AUCTION(auctionID IN NUMBER, userID IN NUMBER, result OUT CHAR);
 
     PROCEDURE INSERT_USER(username IN VARCHAR2, email IN VARCHAR2, realm IN VARCHAR2, funds IN NUMBER DEFAULT 0, pwHash IN RAW, pwSalt IN RAW, assignedID OUT NUMBER);
     PROCEDURE DELETE_USER(userID IN NUMBER);
-    PROCEDURE UPDATE_USER_PARAM(userID IN NUMBER, paramToUpdate IN VARCHAR2, newValue IN VARCHAR2, opRez OUT BOOLEAN);
-    
+    PROCEDURE UPDATE_USER_PARAM(userID IN NUMBER, paramToUpdate IN VARCHAR2, newValue IN VARCHAR2, opRez OUT NUMBER);
+    PROCEDURE UPDATE_USER_PW(userID IN NUMBER, newPassword IN RAW, opRez OUT NUMBER);
+
     PROCEDURE INSERT_WISHLIST(user_name IN VARCHAR2, itemID IN NUMBER, assignedID OUT NUMBER);
     PROCEDURE DELETE_WISHLIST(userID IN NUMBER, itemID in NUMBER, opRez out CHAR);
 END;
-/
+
 create or replace PACKAGE BODY TABLE_DML IS
 
     PROCEDURE INSERT_ITEM(itemID IN NUMBER, itemName IN VARCHAR2, estimatedValue IN NUMBER DEFAULT 0 ) IS
@@ -129,22 +130,32 @@ create or replace PACKAGE BODY TABLE_DML IS
             RAISE;
     END DELETE_USER;
 
-    PROCEDURE UPDATE_USER_PARAM(userID IN NUMBER, paramToUpdate IN VARCHAR2, newValue IN VARCHAR2, opRez OUT BOOLEAN) IS
+    PROCEDURE UPDATE_USER_PARAM(userID IN NUMBER, paramToUpdate IN VARCHAR2, newValue IN VARCHAR2, opRez OUT NUMBER) IS
         command VARCHAR2(200);
     BEGIN
-        IF LOWER(paramToUpdate) IN ('username', 'email', 'realm', 'funds', 'pw_hash') THEN 
-            command := 'UPDATE USERACCOUNTS SET ' || LOWER(paramToUpdate) || '=' || LOWER(newValue) || ' WHERE id=' || userID;
+        IF LOWER(paramToUpdate) IN ('username', 'email', 'realm', 'funds') THEN 
+            command := 'UPDATE USERACCOUNTS SET ' || LOWER(paramToUpdate) || '=''' || LOWER(newValue) || ''' WHERE id=' || userID;
             dbms_output.put_line('Comanda ce se va executa:' || command);
             EXECUTE IMMEDIATE command;
-            opRez := true;
+            opRez := 0;
             COMMIT;
         ELSE
-            opRez := false;
+            opRez := 99;
         END IF;
         EXCEPTION WHEN OTHERS THEN
-            opRez := false;
+            opRez := 99;
             RAISE;
     END UPDATE_USER_PARAM;
+
+    PROCEDURE UPDATE_USER_PW(userID IN NUMBER, newPassword IN RAW, opRez OUT NUMBER) IS
+    BEGIN
+        UPDATE USERACCOUNTS SET pw_hash = newPassword WHERE id=userID;
+        opRez :=0;
+        COMMIT;
+        EXCEPTION WHEN OTHERS THEN
+            opRez :=99;
+            RAISE;
+    END UPDATE_USER_PW;
 
     PROCEDURE INSERT_WISHLIST(user_name IN VARCHAR2, itemID IN NUMBER, assignedID OUT NUMBER) IS
         maxID NUMBER;
@@ -154,7 +165,7 @@ create or replace PACKAGE BODY TABLE_DML IS
         userID :=0;
         alreadyExists :=0;
         SELECT UA.ID INTO userID FROM USERACCOUNTS UA WHERE UA.USERNAME=user_name;
-        
+
         IF userID <> 0 THEN
             SELECT COUNT(*) INTO alreadyExists FROM WISHLISTS WHERE id_user = userID AND id_item = itemID;
             IF alreadyExists = 0 THEN
