@@ -1,0 +1,7 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<ProcessModel class="oracle.dbtools.crest.model.design.process.ProcessModel" name="Process Model" id="2BF979EF-BDC6-4331-31CA-BDEE0A655633">
+<createdBy>Andrei Cana</createdBy>
+<createdTime>2019-10-08 05:49:27 UTC</createdTime>
+<ownerDesignName>PSBD_Schema_Logica</ownerDesignName>
+<shouldBeOpen>false</shouldBeOpen>
+</ProcessModel>

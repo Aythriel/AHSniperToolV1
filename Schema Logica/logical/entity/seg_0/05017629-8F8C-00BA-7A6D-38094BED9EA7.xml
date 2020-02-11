@@ -1,0 +1,83 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<Entity class="oracle.dbtools.crest.model.design.logical.Entity" directorySegmentName="seg_0" id="05017629-8F8C-00BA-7A6D-38094BED9EA7" name="Wishlist">
+<createdBy>Andrei Cana</createdBy>
+<createdTime>2019-10-08 09:09:00 UTC</createdTime>
+<ownerDesignName>PSBD_Schema_Logica</ownerDesignName>
+<engineerTo>
+<item key="D3110558-7302-0F7B-3647-7824B5261C4E" value="true"/>
+</engineerTo>
+<adequatelyNormalized>NO</adequatelyNormalized>
+<expectedVolumes>0</expectedVolumes>
+<fwdEngineeringStrategyName>Single Table</fwdEngineeringStrategyName>
+<growthPercent>0</growthPercent>
+<growthType>Year</growthType>
+<maxVolumes>9999999</maxVolumes>
+<minVolumes>0</minVolumes>
+<normalForm>Third</normalForm>
+<attributes itemClass="oracle.dbtools.crest.model.design.logical.Attribute">
+<Attribute name="ID" id="2461DEB8-E647-0187-31BF-AB61851346F0">
+<createdBy>Andrei Cana</createdBy>
+<createdTime>2019-10-08 09:09:06 UTC</createdTime>
+<ownerDesignName>PSBD_Schema_Logica</ownerDesignName>
+<engineerTo>
+<item key="D3110558-7302-0F7B-3647-7824B5261C4E" value="true"/>
+</engineerTo>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT011</logicalDatatype>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+</Attribute>
+<Attribute name="User_ID" id="419D2635-0BF9-82B3-24BF-6E91EA08F89E">
+<createdBy>Andrei Cana</createdBy>
+<createdTime>2019-10-08 09:09:51 UTC</createdTime>
+<ownerDesignName>PSBD_Schema_Logica</ownerDesignName>
+<engineerTo>
+<item key="D3110558-7302-0F7B-3647-7824B5261C4E" value="true"/>
+</engineerTo>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT011</logicalDatatype>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+</Attribute>
+<Attribute name="Item_ID" id="F0A08670-DE6F-B786-7FCF-50047DCE2595">
+<createdBy>Andrei Cana</createdBy>
+<createdTime>2019-10-08 09:10:35 UTC</createdTime>
+<ownerDesignName>PSBD_Schema_Logica</ownerDesignName>
+<engineerTo>
+<item key="D3110558-7302-0F7B-3647-7824B5261C4E" value="true"/>
+</engineerTo>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT011</logicalDatatype>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+</Attribute>
+<Attribute name="ID1" id="EFB258FF-610F-5F53-56E4-3156020146CA">
+<createdBy>Andrei Cana</createdBy>
+<createdTime>2019-10-08 09:39:13 UTC</createdTime>
+<generatorID>937BBB28-73EF-592B-45D6-DBC307646910</generatorID>
+<ownerDesignName>PSBD_Schema_Logica</ownerDesignName>
+<engineerTo>
+<item key="D3110558-7302-0F7B-3647-7824B5261C4E" value="true"/>
+</engineerTo>
+<referedAttribute>87CD8628-5B51-C679-7979-7412210343E3</referedAttribute>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT011</logicalDatatype>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+</Attribute>
+</attributes>
+<identifiers itemClass="oracle.dbtools.crest.model.design.logical.CandidateKey">
+<identifier id="7CB65580-0E3F-29CB-202D-86EE49AC7B84" name="Wishlist PK">
+<createdBy>Andrei Cana</createdBy>
+<createdTime>2019-10-08 09:09:48 UTC</createdTime>
+<ownerDesignName>PSBD_Schema_Logica</ownerDesignName>
+<engineerTo>
+<item key="D3110558-7302-0F7B-3647-7824B5261C4E" value="true"/>
+</engineerTo>
+<pk>true</pk>
+<usedAttributes>
+<attributeRef>2461DEB8-E647-0187-31BF-AB61851346F0</attributeRef>
+</usedAttributes>
+</identifier>
+</identifiers>
+</Entity>

@@ -1,0 +1,7 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<BusinessInfoDesign class="oracle.dbtools.crest.model.businessinfo.BusinessInfoDesign" name="Business Information" id="2F5541B6-C6C7-0F1F-D9C0-51165E8C46B7">
+<createdBy>Andrei Cana</createdBy>
+<createdTime>2019-10-08 05:49:27 UTC</createdTime>
+<ownerDesignName>PSBD_Schema_Logica</ownerDesignName>
+<shouldBeOpen>false</shouldBeOpen>
+</BusinessInfoDesign>

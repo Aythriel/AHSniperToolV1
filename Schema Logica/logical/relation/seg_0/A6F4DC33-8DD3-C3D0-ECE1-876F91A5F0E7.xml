@@ -1,0 +1,18 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<Relation class="oracle.dbtools.crest.model.design.logical.Relation" name="Wishlist_Items" directorySegmentName="seg_0" id="A6F4DC33-8DD3-C3D0-ECE1-876F91A5F0E7">
+<createdBy>Andrei Cana</createdBy>
+<createdTime>2019-10-08 09:40:10 UTC</createdTime>
+<ownerDesignName>PSBD_Schema_Logica</ownerDesignName>
+<engineerTo>
+<item key="D3110558-7302-0F7B-3647-7824B5261C4E" value="true"/>
+</engineerTo>
+<identifying>false</identifying>
+<optionalSource>true</optionalSource>
+<optionalTarget>false</optionalTarget>
+<sourceCardinality>*</sourceCardinality>
+<sourceEntity>05017629-8F8C-00BA-7A6D-38094BED9EA7</sourceEntity>
+<targetCardinalityString>*</targetCardinalityString>
+<targetEntity>CE3D61B3-A02F-D31F-7917-3E8DEDEBEFDB</targetEntity>
+<transferable>true</transferable>
+<deleteRule>NO ACTION</deleteRule>
+</Relation>

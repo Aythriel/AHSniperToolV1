@@ -1,0 +1,7 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<LogicalDesign class="oracle.dbtools.crest.model.design.logical.LogicalDesign" name="Logical" id="14C5000F-FAF2-A215-D135-E0638065AFFE" mainViewID="0D631F0C-744F-A592-2137-FC1FB1912B2E">
+<createdBy>Andrei Cana</createdBy>
+<createdTime>2019-10-08 05:49:27 UTC</createdTime>
+<ownerDesignName>PSBD_Schema_Logica</ownerDesignName>
+<shouldBeOpen>false</shouldBeOpen>
+</LogicalDesign>

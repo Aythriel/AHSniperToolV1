@@ -1,0 +1,95 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<Entity class="oracle.dbtools.crest.model.design.logical.Entity" directorySegmentName="seg_0" id="743FF2FD-8AF8-FE8D-BEBE-A53A39504161" name="Reserved_Items">
+<createdBy>Andrei Cana</createdBy>
+<createdTime>2019-10-22 16:19:11 UTC</createdTime>
+<ownerDesignName>PSBD_Schema_Logica</ownerDesignName>
+<engineerTo>
+<item key="D3110558-7302-0F7B-3647-7824B5261C4E" value="true"/>
+</engineerTo>
+<adequatelyNormalized>NO</adequatelyNormalized>
+<expectedVolumes>0</expectedVolumes>
+<fwdEngineeringStrategyName>Single Table</fwdEngineeringStrategyName>
+<growthPercent>0</growthPercent>
+<growthType>Year</growthType>
+<maxVolumes>9999999</maxVolumes>
+<minVolumes>0</minVolumes>
+<normalForm>Third</normalForm>
+<attributes itemClass="oracle.dbtools.crest.model.design.logical.Attribute">
+<Attribute name="User_ID" id="5DB1B55A-42A0-0EE9-0133-30CA9BE6E71A">
+<createdBy>Andrei Cana</createdBy>
+<createdTime>2019-10-22 16:21:34 UTC</createdTime>
+<ownerDesignName>PSBD_Schema_Logica</ownerDesignName>
+<engineerTo>
+<item key="D3110558-7302-0F7B-3647-7824B5261C4E" value="true"/>
+</engineerTo>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT011</logicalDatatype>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+</Attribute>
+<Attribute name="Auction_ID" id="0FBE29AF-3E62-1914-69CD-207CFC5A94EC">
+<createdBy>Andrei Cana</createdBy>
+<createdTime>2019-10-22 16:24:05 UTC</createdTime>
+<ownerDesignName>PSBD_Schema_Logica</ownerDesignName>
+<engineerTo>
+<item key="D3110558-7302-0F7B-3647-7824B5261C4E" value="true"/>
+</engineerTo>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT011</logicalDatatype>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+</Attribute>
+<Attribute name="Date_Made" id="8C203853-B414-3D48-5217-93481C475488">
+<createdBy>Andrei Cana</createdBy>
+<createdTime>2019-10-22 16:24:25 UTC</createdTime>
+<ownerDesignName>PSBD_Schema_Logica</ownerDesignName>
+<engineerTo>
+<item key="D3110558-7302-0F7B-3647-7824B5261C4E" value="true"/>
+</engineerTo>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT008</logicalDatatype>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+</Attribute>
+<Attribute name="Date_Expiry" id="E5C2BFEC-1C01-FE7A-47BF-0AEE5AC0EC1A">
+<createdBy>Andrei Cana</createdBy>
+<createdTime>2019-10-22 16:26:34 UTC</createdTime>
+<ownerDesignName>PSBD_Schema_Logica</ownerDesignName>
+<engineerTo>
+<item key="D3110558-7302-0F7B-3647-7824B5261C4E" value="true"/>
+</engineerTo>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT008</logicalDatatype>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+</Attribute>
+<Attribute name="ID" id="E4A4510B-0894-068D-CFC5-C6C8FA1EA167">
+<createdBy>Andrei Cana</createdBy>
+<createdTime>2019-10-22 16:28:09 UTC</createdTime>
+<generatorID>309517AE-64CC-B0E2-514B-0DDBC1AE8A7F</generatorID>
+<ownerDesignName>PSBD_Schema_Logica</ownerDesignName>
+<engineerTo>
+<item key="D3110558-7302-0F7B-3647-7824B5261C4E" value="true"/>
+</engineerTo>
+<referedAttribute>9BFA2985-0D88-96D8-2B8D-FC6C1C365B2C</referedAttribute>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT011</logicalDatatype>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+</Attribute>
+<Attribute name="ID1" id="00897265-4962-4F2E-F1C7-20887650AF6E">
+<createdBy>Andrei Cana</createdBy>
+<createdTime>2019-10-22 16:31:04 UTC</createdTime>
+<generatorID>8FD1CF7A-35B5-43B7-70D3-FC82B88C4440</generatorID>
+<ownerDesignName>PSBD_Schema_Logica</ownerDesignName>
+<engineerTo>
+<item key="D3110558-7302-0F7B-3647-7824B5261C4E" value="true"/>
+</engineerTo>
+<referedAttribute>87CD8628-5B51-C679-7979-7412210343E3</referedAttribute>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT011</logicalDatatype>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+</Attribute>
+</attributes>
+</Entity>

@@ -1,0 +1,85 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<Diagram class="oracle.dbtools.crest.swingui.logical.DPVLogical" name="Logical" id="0D631F0C-744F-A592-2137-FC1FB1912B2E">
+<createdBy>Andrei Cana</createdBy>
+<modifiedBy>Andrei Cana</modifiedBy>
+<createdTime>2019-10-08 05:54:03 UTC</createdTime>
+<autoRoute>false</autoRoute>
+<boxInbox>true</boxInbox>
+<showLegend>false</showLegend>
+<showLabels>false</showLabels>
+<showRelAttributes>false</showRelAttributes>
+<gridEnabled>false</gridEnabled>
+<showGrid>false</showGrid>
+<diagramColor>-1</diagramColor>
+<display>false</display>
+<notation>1</notation>
+<objectViews>
+<OView class="oracle.dbtools.crest.swingui.logical.TVEntity" oid="05017629-8F8C-00BA-7A6D-38094BED9EA7" otype="Entity" vid="84A6DC5B-4C7E-9CEE-8E67-ABAED5E3918A">
+<hideElementsInCurrentOnly>false</hideElementsInCurrentOnly>
+<bounds x="397" y="158" width="170" height="110"/>
+</OView>
+<OView class="oracle.dbtools.crest.swingui.logical.TVEntity" oid="743FF2FD-8AF8-FE8D-BEBE-A53A39504161" otype="Entity" vid="D54EECA1-9C96-A3BE-9F70-4A19C6D5EAA5">
+<hideElementsInCurrentOnly>false</hideElementsInCurrentOnly>
+<bounds x="147" y="386" width="170" height="110"/>
+</OView>
+<OView class="oracle.dbtools.crest.swingui.logical.TVEntity" oid="929E50D8-061F-84A9-D29F-CA67EAA4E703" otype="Entity" vid="E33F3513-AF88-12A8-917C-24D4B1A0261A">
+<hideElementsInCurrentOnly>false</hideElementsInCurrentOnly>
+<bounds x="688" y="333" width="170" height="153"/>
+</OView>
+<OView class="oracle.dbtools.crest.swingui.logical.TVEntity" oid="CE3D61B3-A02F-D31F-7917-3E8DEDEBEFDB" otype="Entity" vid="BD4B102E-9A58-7290-9030-DC8B211EE08A">
+<hideElementsInCurrentOnly>false</hideElementsInCurrentOnly>
+<bounds x="678" y="164" width="170" height="110"/>
+</OView>
+<OView class="oracle.dbtools.crest.swingui.logical.TVEntity" oid="E500AC97-A7DD-859C-12DC-E36B33D2042C" otype="Entity" vid="DAE67FB5-093E-EF60-E73F-E45929A166F9">
+<hideElementsInCurrentOnly>false</hideElementsInCurrentOnly>
+<bounds x="141" y="145" width="186" height="129"/>
+</OView>
+</objectViews>
+<connectors>
+<Connector class="oracle.dbtools.crest.swingui.logical.TVRelation" oid="309517AE-64CC-B0E2-514B-0DDBC1AE8A7F" otype="Relation" vid_source="E33F3513-AF88-12A8-917C-24D4B1A0261A" vid_target="D54EECA1-9C96-A3BE-9F70-4A19C6D5EAA5">
+<hideElementsInCurrentOnly>false</hideElementsInCurrentOnly>
+<backgroundColor>-16777216</backgroundColor>
+<lineWidth>1</lineWidth>
+<points>
+<point x="688" y="436"/>
+<point x="317" y="436"/>
+</points>
+</Connector>
+<Connector class="oracle.dbtools.crest.swingui.logical.TVRelation" oid="8FD1CF7A-35B5-43B7-70D3-FC82B88C4440" otype="Relation" vid_source="D54EECA1-9C96-A3BE-9F70-4A19C6D5EAA5" vid_target="DAE67FB5-093E-EF60-E73F-E45929A166F9">
+<hideElementsInCurrentOnly>false</hideElementsInCurrentOnly>
+<backgroundColor>-16777216</backgroundColor>
+<lineWidth>1</lineWidth>
+<points>
+<point x="232" y="386"/>
+<point x="232" y="274"/>
+</points>
+</Connector>
+<Connector class="oracle.dbtools.crest.swingui.logical.TVRelation" oid="937BBB28-73EF-592B-45D6-DBC307646910" otype="Relation" vid_source="DAE67FB5-093E-EF60-E73F-E45929A166F9" vid_target="84A6DC5B-4C7E-9CEE-8E67-ABAED5E3918A">
+<hideElementsInCurrentOnly>false</hideElementsInCurrentOnly>
+<backgroundColor>-16777216</backgroundColor>
+<lineWidth>1</lineWidth>
+<points>
+<point x="327" y="213"/>
+<point x="397" y="213"/>
+</points>
+</Connector>
+<Connector class="oracle.dbtools.crest.swingui.logical.TVRelation" oid="A6F4DC33-8DD3-C3D0-ECE1-876F91A5F0E7" otype="Relation" vid_source="84A6DC5B-4C7E-9CEE-8E67-ABAED5E3918A" vid_target="BD4B102E-9A58-7290-9030-DC8B211EE08A">
+<hideElementsInCurrentOnly>false</hideElementsInCurrentOnly>
+<backgroundColor>-16777216</backgroundColor>
+<lineWidth>1</lineWidth>
+<points>
+<point x="567" y="216"/>
+<point x="678" y="216"/>
+</points>
+</Connector>
+<Connector class="oracle.dbtools.crest.swingui.logical.TVRelation" oid="ED30349D-969D-BA68-6C8D-30FABD55EB28" otype="Relation" vid_source="BD4B102E-9A58-7290-9030-DC8B211EE08A" vid_target="E33F3513-AF88-12A8-917C-24D4B1A0261A">
+<hideElementsInCurrentOnly>false</hideElementsInCurrentOnly>
+<backgroundColor>-16777216</backgroundColor>
+<lineWidth>1</lineWidth>
+<points>
+<point x="768" y="274"/>
+<point x="768" y="333"/>
+</points>
+</Connector>
+</connectors>
+</Diagram>

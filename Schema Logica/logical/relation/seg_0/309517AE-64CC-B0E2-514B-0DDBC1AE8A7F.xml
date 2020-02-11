@@ -1,0 +1,21 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<Relation class="oracle.dbtools.crest.model.design.logical.Relation" name="Auctions_Reserved" directorySegmentName="seg_0" id="309517AE-64CC-B0E2-514B-0DDBC1AE8A7F">
+<createdBy>Andrei Cana</createdBy>
+<createdTime>2019-10-22 16:28:09 UTC</createdTime>
+<ownerDesignName>PSBD_Schema_Logica</ownerDesignName>
+<engineerTo>
+<item key="D3110558-7302-0F7B-3647-7824B5261C4E" value="true"/>
+</engineerTo>
+<sourcePk>F28E652C-7EBF-C659-525B-EE9BD81DB450</sourcePk>
+<identifying>false</identifying>
+<nameOnSource>Reserved_Auction</nameOnSource>
+<nameOnTarget>Auction_Reservation</nameOnTarget>
+<optionalSource>true</optionalSource>
+<optionalTarget>false</optionalTarget>
+<sourceCardinality>1</sourceCardinality>
+<sourceEntity>929E50D8-061F-84A9-D29F-CA67EAA4E703</sourceEntity>
+<targetCardinalityString>1</targetCardinalityString>
+<targetEntity>743FF2FD-8AF8-FE8D-BEBE-A53A39504161</targetEntity>
+<transferable>true</transferable>
+<deleteRule>NO ACTION</deleteRule>
+</Relation>

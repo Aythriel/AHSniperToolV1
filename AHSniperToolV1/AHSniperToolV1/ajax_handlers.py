@@ -114,7 +114,7 @@ def removeReservation():
         e = sys.exc_info()[0]
         print("Database Error: {}".format(e.args))
         return "Exception occured:{}".format(e.args)
-
+    
     return "Successfully failed."
 
 @app.route('/updatePassword', methods=['PUT'])
@@ -176,7 +176,7 @@ def sendEmails():
 
     cursorOrcl = orclConnection.cursor()
     wlQ = """SELECT i.name, a.buyout_value, a.discount, a.timeleft FROM WISHLISTS W, ITEMS I, AUCTIONS A
-        WHERE w.id_item=i.id AND a.id_item=w.id_item AND A.discount>50 AND w.notified_for_auction=0 AND w.id_user={}""".format(userID)
+        WHERE w.id_item=i.id AND a.id_item=w.id_item AND A.discount>10 AND w.notified_for_auction=0 AND w.id_user={}""".format(userID)
     cursorOrcl.execute(wlQ)
     results = cursorOrcl.fetchall()
 

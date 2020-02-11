@@ -1,0 +1,19 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<Relation class="oracle.dbtools.crest.model.design.logical.Relation" name="User_Reservations" directorySegmentName="seg_0" id="8FD1CF7A-35B5-43B7-70D3-FC82B88C4440">
+<createdBy>Andrei Cana</createdBy>
+<createdTime>2019-10-22 16:30:33 UTC</createdTime>
+<ownerDesignName>PSBD_Schema_Logica</ownerDesignName>
+<engineerTo>
+<item key="D3110558-7302-0F7B-3647-7824B5261C4E" value="true"/>
+</engineerTo>
+<targetPk>5353511A-E8AB-4BF9-149D-6D3D9B495287</targetPk>
+<identifying>false</identifying>
+<optionalSource>false</optionalSource>
+<optionalTarget>false</optionalTarget>
+<sourceCardinality>*</sourceCardinality>
+<sourceEntity>743FF2FD-8AF8-FE8D-BEBE-A53A39504161</sourceEntity>
+<targetCardinalityString>1</targetCardinalityString>
+<targetEntity>E500AC97-A7DD-859C-12DC-E36B33D2042C</targetEntity>
+<transferable>true</transferable>
+<deleteRule>NO ACTION</deleteRule>
+</Relation>

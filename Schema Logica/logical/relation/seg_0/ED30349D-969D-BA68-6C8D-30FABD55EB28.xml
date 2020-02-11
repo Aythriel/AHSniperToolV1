@@ -1,0 +1,19 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<Relation class="oracle.dbtools.crest.model.design.logical.Relation" name="Item_Listings" directorySegmentName="seg_0" id="ED30349D-969D-BA68-6C8D-30FABD55EB28">
+<createdBy>Andrei Cana</createdBy>
+<createdTime>2019-10-08 09:30:33 UTC</createdTime>
+<ownerDesignName>PSBD_Schema_Logica</ownerDesignName>
+<engineerTo>
+<item key="D3110558-7302-0F7B-3647-7824B5261C4E" value="true"/>
+</engineerTo>
+<sourcePk>3AA1B99A-E3EA-E8A9-280C-80E7AD26B4AD</sourcePk>
+<identifying>false</identifying>
+<optionalSource>true</optionalSource>
+<optionalTarget>false</optionalTarget>
+<sourceCardinality>1</sourceCardinality>
+<sourceEntity>CE3D61B3-A02F-D31F-7917-3E8DEDEBEFDB</sourceEntity>
+<targetCardinalityString>*</targetCardinalityString>
+<targetEntity>929E50D8-061F-84A9-D29F-CA67EAA4E703</targetEntity>
+<transferable>true</transferable>
+<deleteRule>NO ACTION</deleteRule>
+</Relation>
